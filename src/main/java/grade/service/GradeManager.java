@@ -2,6 +2,8 @@ package grade.service;
 
 import grade.filesreader.GradesParser;
 import grade.model.Grade;
+import org.decimal4j.util.DoubleRounder;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -34,10 +36,10 @@ public class GradeManager {
                 if (classAveragesMap.containsKey(classAveragesMap.get(grade.getClassName()))) {
                     double currentAverageValue = classAveragesMap.get(grade.getClassName());
                     tmpAverage2 = (currentAverageValue + tmpAverage) / 2;
-                    classAveragesMap.put(grade.getClassName(), currentAverageValue);
+                    classAveragesMap.put(grade.getClassName(), DoubleRounder.round(currentAverageValue,2));
                 } else {
                     tmpAverage2 = tmpAverage;
-                    classAveragesMap.put(grade.getClassName(), tmpAverage);
+                    classAveragesMap.put(grade.getClassName(), DoubleRounder.round(tmpAverage,2));
                 }
                 maxValue = Math.max(Collections.max(classAveragesMap.values()), tmpAverage2);
                 if (maxValue <= tmpAverage2) {
