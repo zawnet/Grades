@@ -69,7 +69,7 @@ public class GradeManager {
             grade.setAverage(tmpAverage);
         }
         Optional<Map.Entry<String, Double>> averages = gradesParser.getGradesList().stream()
-                .collect(Collectors.groupingBy(Grade::getClassName,Collectors.averagingDouble(Grade::getAverage)))
+                .collect(Collectors.groupingBy(Grade::getClassName,Collectors.averagingDouble(value ->DoubleRounder.round(value.getAverage(),2) )))
                 .entrySet().stream()
                 .max(Comparator.comparingDouble(value -> value.getValue()));
 

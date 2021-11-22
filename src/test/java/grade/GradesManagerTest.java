@@ -23,14 +23,23 @@ public class GradesManagerTest {
 
     private GradeManager gradeManager;
     String filePath = "grades.txt";
-    
+
     @Test
     public void findBestAverageClassTest(){
-
         // given
         gradeManager = new GradeManager(new GradesParser(new GradesReader(filePath)));
         // when
         Map.Entry<String, Double> result = gradeManager.findBestAverageClass();
+        //then
+        assertEquals("Expected the following result: \"3A=4.08\"", result, new AbstractMap.SimpleEntry<String,Double>("3A",4.08));
+    }
+
+    @Test
+    public void findBestAverageClassByStreamsTest(){
+        // given
+        gradeManager = new GradeManager(new GradesParser(new GradesReader(filePath)));
+        // when
+        Map.Entry<String, Double> result = gradeManager.findBestAverageClassByStreams();
         //then
         assertEquals("Expected the following result: \"3A=4.08\"", result, new AbstractMap.SimpleEntry<String,Double>("3A",4.08));
     }
