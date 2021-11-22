@@ -36,10 +36,10 @@ public class GradeManager {
                 if (classAveragesMap.containsKey(classAveragesMap.get(grade.getClassName()))) {
                     double currentAverageValue = classAveragesMap.get(grade.getClassName());
                     tmpAverage2 = (currentAverageValue + tmpAverage) / 2;
-                    classAveragesMap.put(grade.getClassName(), DoubleRounder.round(currentAverageValue,2));
+                    classAveragesMap.put(grade.getClassName(), currentAverageValue);
                 } else {
                     tmpAverage2 = tmpAverage;
-                    classAveragesMap.put(grade.getClassName(), DoubleRounder.round(tmpAverage,2));
+                    classAveragesMap.put(grade.getClassName(), tmpAverage);
                 }
                 maxValue = Math.max(Collections.max(classAveragesMap.values()), tmpAverage2);
                 if (maxValue <= tmpAverage2) {
@@ -54,7 +54,7 @@ public class GradeManager {
         }
 
         if(classAveragesMap.containsKey(maxAverageKey)) {
-            return new java.util.AbstractMap.SimpleEntry<String, Double>(maxAverageKey, maxValue);
+            return new java.util.AbstractMap.SimpleEntry<String, Double>(maxAverageKey, DoubleRounder.round(maxValue,2));
         }
         else {
             throw new NoSuchElementException("Not found class with maximum average.");
@@ -69,10 +69,10 @@ public class GradeManager {
             grade.setAverage(tmpAverage);
         }
         Optional<Map.Entry<String, Double>> averages = gradesParser.getGradesList().stream()
-                .collect(Collectors.groupingBy(Grade::getClassName,Collectors.averagingDouble(value ->DoubleRounder.round(value.getAverage(),2) )))
+                .collect(Collectors.groupingBy(Grade::getClassName,Collectors.averagingDouble(value -> DoubleRounder.round(value.getAverage(),2))))
                 .entrySet().stream()
                 .max(Comparator.comparingDouble(value -> value.getValue()));
 
-        return averages.orElseThrow(NoSuchElementException::new);
+        return averages.orElseThrow(() -> new NoSuchElementException("Not found class with maximum average."));
     }
 }
