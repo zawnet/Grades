@@ -4,18 +4,21 @@ import grade.filesreader.GradesParser;
 import grade.model.Grade;
 import org.decimal4j.util.DoubleRounder;
 
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class GradeManager {
 
     private  final GradesParser gradesParser;
+    private static final DecimalFormat df = new DecimalFormat("0.00");
 
     public GradeManager(GradesParser gradesParser) {
         this.gradesParser = gradesParser;
     }
 
     public Map.Entry<String, Double> findBestAverageClass() throws NoSuchElementException {
+
 
         Map<String,Double> classAveragesMap = new HashMap<>();
         String maxAverageKey = null;
@@ -53,8 +56,9 @@ public class GradeManager {
             }
         }
 
+        double scale = Math.pow(10, 2);
         if(classAveragesMap.containsKey(maxAverageKey)) {
-            return new java.util.AbstractMap.SimpleEntry<String, Double>(maxAverageKey, DoubleRounder.round(maxValue,2));
+            return new java.util.AbstractMap.SimpleEntry<String, Double>(maxAverageKey, Math.round(maxValue * scale) / scale);
         }
         else {
             throw new NoSuchElementException("Not found class with maximum average.");
@@ -68,8 +72,9 @@ public class GradeManager {
                     .collect(Collectors.averagingDouble(Float::doubleValue)).doubleValue();
             grade.setAverage(tmpAverage);
         }
+        double scale = Math.pow(10, 2);
         Optional<Map.Entry<String, Double>> averages = gradesParser.getGradesList().stream()
-                .collect(Collectors.groupingBy(Grade::getClassName,Collectors.averagingDouble(value -> DoubleRounder.round(value.getAverage(),2))))
+                .collect(Collectors.groupingBy(Grade::getClassName,Collectors.averagingDouble(value -> Math.round(value.getAverage() * scale) / scale)))
                 .entrySet().stream()
                 .max(Comparator.comparingDouble(value -> value.getValue()));
 
